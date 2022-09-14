@@ -15,13 +15,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Configure Docker Client
+      - name: Push Docker Image to Container Registry (GCR)
+        with:
+          entrypoint: /bin/sh
         run: |-
           mkdir -p /kaniko/.docker
           echo "{\"auths\":{\"gcr.io\":{\"auth\":\"$(printf "%s:%s" "_json_key" "${{ secrets.GCR_SERVICE_ACCOUT_KEY }}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
-
-      - name: Push Docker Image to Container Registry (GCR)
-        run: |-
           /kaniko/executor
           --cache=true
           --dockerfile "./Dockerfile"
