@@ -41,7 +41,7 @@ jobs:
         with:
           registry: gcr.io
           username: _json_key
-          password: ${{ secrets.GCR_SERVICE_ACCOUNT_KEY }}
+          password: ${{ secrets.GCR_SERVICE_ACCOUT_KEY }}
 
       # And make it available for builds
       - name: Build and push
