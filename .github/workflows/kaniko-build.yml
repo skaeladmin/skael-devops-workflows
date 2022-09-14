@@ -15,17 +15,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: google-github-actions/setup-gcloud@master
-        with:
-          service_account_key: ${{ secrets.SERVICE_ACCOUNT_KEY }}
-          project_id: ${{ env.PROJECT_ID }}
-          export_default_credentials: true
-
       - name: Configure Docker Client
-        run: |- 
-          gcloud auth configure-docker --quiet
-          gcloud auth configure-docker us-west2-docker.pkg.dev --quiet
-          gcloud config set builds/use_kaniko True
+        run: |-
+          mkdir -p /kaniko/.docker
+          echo "{\"auths\":{\"gcr.io\":{\"auth\":\"$(printf "%s:%s" "_json_key" "${{ secrets.GCR_SERVICE_ACCOUT_KEY }}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
 
       - name: Push Docker Image to Container Registry (GCR)
         run: |-
@@ -33,4 +26,3 @@ jobs:
           --cache=true
           --dockerfile "./Dockerfile"
           --destination "gcr.io/skael-hydra/${{ inputs.image_name }}:${GITHUB_SHA:0:8}"
- 
