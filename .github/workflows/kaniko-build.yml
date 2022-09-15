@@ -6,6 +6,9 @@ on:
       docker_image_name:
         required: true
         type: string
+      docker_image_tag_prefix:
+        required: false
+        type: string
       docker_dockerfile_path:
         required: true
         type: string
@@ -21,7 +24,9 @@ jobs:
 
       - name: Set outputs
         id: vars
-        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+        run: |
+          TAG_PREFIX=${{ inputs.docker_image_tag_prefix }}
+          echo "::set-output name=sha_short::${TAG_PREFIX:-"build"}-$(git rev-parse --short HEAD)"
 
       # This is a separate action that sets up buildx runner
       - name: Set up Docker Buildx
