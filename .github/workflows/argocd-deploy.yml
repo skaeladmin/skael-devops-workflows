@@ -3,6 +3,9 @@ name: ArgoCD deploy
 on:
   workflow_call:
     inputs:
+      application_name:
+        required: true
+        type: string
       docker_image_name:
         required: true
         type: string
@@ -31,6 +34,6 @@ jobs:
           apk add --no-cache git curl bash
           curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
           chmod +x /usr/local/bin/argocd
-          argocd app set  ${{ inputs.docker_image_tag_prefix }} -p image.repository=${{ inputs.docker_image_name }} -p image.tag=${{ steps.vars.outputs.sha_short }} --grpc-web
-          argocd app sync ${{ inputs.docker_image_tag_prefix }} --grpc-web
-          argocd app wait ${{ inputs.docker_image_tag_prefix }} --grpc-web
+          argocd app set  ${{ inputs.application_name }} -p image.repository=${{ inputs.docker_image_name }} -p image.tag=${{ steps.vars.outputs.sha_short }} --grpc-web
+          argocd app sync ${{ inputs.application_name }} --grpc-web
+          argocd app wait ${{ inputs.application_name }} --grpc-web
