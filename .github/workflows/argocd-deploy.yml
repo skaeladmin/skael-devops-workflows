@@ -1,0 +1,36 @@
+name: ArgoCD deploy
+
+on:
+  workflow_call:
+    inputs:
+      docker_image_name:
+        required: true
+        type: string
+      docker_image_tag_prefix:
+        required: false
+        type: string
+
+jobs:
+  deploy:
+    name: Deploy with argo-cd
+    runs-on: ubuntu-22.04
+    container:
+      image: alpine:latest
+      env:
+        ARGOCD_AUTH_TOKEN: ${{ secrets.ARGOCD_AUTH_TOKEN }}
+        ARGOCD_SERVER: ${{ secrets.ARGOCD_SERVER }}
+    steps:
+      - name: Set outputs
+        id: vars
+        run: |
+          TAG_PREFIX=${{ inputs.docker_image_tag_prefix }}
+          echo "::set-output name=sha_short::${TAG_PREFIX:-"build"}-$(git rev-parse --short HEAD)"
+
+      - name: Set new image version
+        run: |
+          apk add --no-cache git curl bash
+          curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+          chmod +x /usr/local/bin/argocd
+          argocd app set  ${{ inputs.docker_image_tag_prefix }} -p image.repository=${{ inputs.docker_image_name }} -p image.tag=${{ steps.vars.outputs.sha_short }} --grpc-web
+          argocd app sync ${{ inputs.docker_image_tag_prefix }} --grpc-web
+          argocd app wait ${{ inputs.docker_image_tag_prefix }} --grpc-web
