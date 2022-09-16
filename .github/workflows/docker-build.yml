@@ -26,7 +26,7 @@ jobs:
         id: vars
         run: |
           TAG_PREFIX=${{ inputs.docker_image_tag_prefix }}
-          echo "::set-output name=sha_short::${TAG_PREFIX:-"build"}-$(git rev-parse --short HEAD)"
+          echo "::set-output name=sha_short::${TAG_PREFIX:-"build"}-${GITHUB_SHA::7}"
 
       # This is a separate action that sets up buildx runner
       - name: Set up Docker Buildx
