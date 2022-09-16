@@ -22,6 +22,12 @@ jobs:
         ARGOCD_AUTH_TOKEN: ${{ secrets.ARGOCD_AUTH_TOKEN }}
         ARGOCD_SERVER: ${{ secrets.ARGOCD_SERVER_DOMAIN }}
     steps:
+      - name: Prepare
+        run: |
+          apk add --no-cache git curl bash
+          curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+          chmod +x /usr/local/bin/argocd
+
       - name: Checkout
         uses: actions/checkout@v2
 
@@ -33,9 +39,6 @@ jobs:
 
       - name: Set new image version
         run: |
-          apk add --no-cache git curl bash
-          curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
-          chmod +x /usr/local/bin/argocd
           argocd app set  ${{ inputs.application_name }} -p image.repository=gcr.io/skael-hydra/${{ inputs.docker_image_name }} -p image.tag=${{ steps.vars.outputs.sha_short }} --grpc-web
           argocd app sync ${{ inputs.application_name }} --grpc-web
           argocd app wait ${{ inputs.application_name }} --grpc-web
