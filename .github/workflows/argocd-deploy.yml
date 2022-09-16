@@ -1,4 +1,4 @@
-name: ArgoCD deploy
+name: argocd deploy
 
 on:
   workflow_call:
