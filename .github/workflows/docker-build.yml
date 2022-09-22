@@ -12,6 +12,10 @@ on:
       docker_dockerfile_path:
         required: true
         type: string
+      docker_context_path:
+        required: false
+        default: .
+        type: string
 
 
 jobs:
@@ -52,7 +56,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
-          context: .
+          context: ${{ inputs.docker_context_path }}
           file: ${{ inputs.docker_dockerfile_path }}
           push: true
           tags: "gcr.io/skael-hydra/${{ inputs.docker_image_name }}:${{ steps.vars.outputs.sha_short }}"
