@@ -62,7 +62,7 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
           build-args: |
-            SSH_PRIVATE_KEY="${{ secrets.SSH_PRIVATE_KEY }}"
+            SSH_PRIVATE_KEY="${{ secrets.CICD_SSH_KEY }}"
 
       # This ugly bit is necessary if you don't want your cache to grow forever
       # until it hits GitHub's limit of 5GB.
