@@ -20,7 +20,7 @@ jobs:
       image: alpine:latest
       env:
         ARGOCD_AUTH_TOKEN: ${{ secrets.ARGOCD_AUTH_TOKEN }}
-        ARGOCD_SERVER: ${{ secrets.ARGOCD_SERVER_DOMAIN }}
+        ARGOCD_SERVER: ${{ secrets.ARGOCD_SERVER }}
     steps:
       - name: Prepare
         run: |
