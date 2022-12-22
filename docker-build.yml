@@ -61,7 +61,7 @@ jobs:
           context: ${{ inputs.docker_context_path }}
           file: ${{ inputs.docker_dockerfile_path }}
           push: true
-          tags: "gcr.io/skael-hydra/${{ inputs.docker_image_name }}:${{ steps.vars.outputs.sha_short }}"
+          tags: "ghcr.io/headframe-io/${{ inputs.docker_image_name }}:${{ steps.vars.outputs.sha_short }}"
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
           build-args: |
